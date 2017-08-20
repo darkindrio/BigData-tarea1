@@ -1,0 +1,32 @@
+# Primera consulta, tweets por hora
+db.icccualquiercosa.aggregate(
+   [
+      {
+        $group : {
+           _id : { hour: { $hour: "$created_at" }, day: { $dayOfMonth: "$created_at" } },
+           count: { $sum: 1 }
+        }
+      }
+   ]
+)
+
+# Convertir la fecha a 
+db.icccualquiercosa.find({}).forEach(function (doc) {
+    doc.created_at = new Date(doc.created_at);
+    db.icccualquiercosa.save(doc);
+});
+
+# Segunda consulta, agrupar por ubicacion
+db.icccualquiercosa.aggregate([
+	
+    {"$group" : {_id:"$place", count:{$sum:1}}}
+])
+
+
+# Primera consulta, tweets por hora
+SELECT DATE(created) AS ForDate,
+        COUNT(*) AS tweets
+ FROM   carga_test
+ GROUP BY DATE(created)
+ ORDER BY ForDate
+
